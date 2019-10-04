@@ -3,9 +3,8 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <AzureFunctionsVersion>v2</AzureFunctionsVersion>
-        <LangVersion>8.0</LangVersion>
+        <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
-        <NullableContextOptions>enable</NullableContextOptions>
         <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
     </PropertyGroup>
     <ItemGroup>
