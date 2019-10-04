@@ -17,21 +17,19 @@ namespace GitTrends.Functions
         readonly static string _clientId = Environment.GetEnvironmentVariable("GitTrendsClientId");
 
         [FunctionName(nameof(GenerateGitHubOAuthToken))]
-        public static async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequest httpRequest, ILogger log)
+        public static async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequest httpRequest, GitHubAuthService gitHubAuthService, ILogger log)
         {
             log.LogInformation("Received request for OAuth Token");
 
-            using (var reader = new StreamReader(httpRequest.Body))
-            {
-                var body = await reader.ReadToEndAsync().ConfigureAwait(false);
-                var generateTokenDTO = JsonConvert.DeserializeObject<GenerateTokenDTO>(body);
+            using var reader = new StreamReader(httpRequest.Body);
+            var body = await reader.ReadToEndAsync().ConfigureAwait(false);
+            var generateTokenDTO = JsonConvert.DeserializeObject<GenerateTokenDTO>(body);
 
-                var token = await GitHubAuthService.GetGitHubToken(_clientId, _clientSecret, generateTokenDTO.LoginCode, generateTokenDTO.State).ConfigureAwait(false);
+            var token = await gitHubAuthService.GetGitHubToken(_clientId, _clientSecret, generateTokenDTO.LoginCode, generateTokenDTO.State).ConfigureAwait(false);
 
-                log.LogInformation("Token Retrived");
+            log.LogInformation("Token Retrived");
 
-                return new OkObjectResult(token);
-            }
+            return new OkObjectResult(token);
         }
     }
 }
